@@ -7,22 +7,22 @@ const URL = "https://jsonplaceholder.typicode.com/users";
 
 async function req(url){
     const data = await fetch(url);
+    if (!data.ok) throw new Error("Not 2xx response, status is " + data.status, {cause: data});
     return await data.json();
 }
 
 req(URL)
 .then(data => createTable(data))
-.catch((e) => console.error('data error: ' + e));
+.catch((e) => alert(e));
 
 const createTable = (data) => {
     const table = `    
-    <table>
-        <caption>List of users</caption>
-        ${getHeader(data[0])}
-        ${getBody(data)}
-    </table>
-    `
-    console.log(table);
+        <table>
+            <caption>List of users</caption>
+            ${getHeader(data[0])}
+            ${getBody(data)}
+        </table>
+        `
     document.querySelector('body').insertAdjacentHTML('beforeend',table);
 }
 
@@ -42,7 +42,6 @@ const getBody = (data) => {
     return tbody+'</tbody>';
 }
 
-const printObj = (obj) => {
-    console.dir(obj);
-    return 'obj: ' + obj;
+const printObj = ({name, suite, street, city}) => {
+    return name ? name : street + ' ' + suite + ', ' + city;
 }
